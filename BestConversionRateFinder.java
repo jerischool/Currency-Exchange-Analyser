@@ -2,6 +2,7 @@
 // it uses the floyd-warshall algorithm to find the shortest paths in the graph
 
 public class BestConversionRateFinder {
+
     private CurrencyExchangeGraph graph;
 
     // constructor to initialize the best conversion rate finder with a currency exchange graph
@@ -11,7 +12,7 @@ public class BestConversionRateFinder {
 
     // method to find the best conversion rate from source to target currency
     // it uses the floyd-warshall algorithm to compute the shortest paths in the graph
-    public void findBestConversionRate(String sourceCurrency, String targetCurrency) {
+    public double findBestConversionRate(String sourceCurrency, String targetCurrency) {
         int n = graph.getNumberOfCurrencies();
         String[] currencyNames = graph.getCurrencyNames();
         double[][] exchangeRates = graph.getExchangeRates();
@@ -21,15 +22,14 @@ public class BestConversionRateFinder {
         int targetIndex = findCurrencyIndex(targetCurrency, currencyNames);
 
         if (sourceIndex == -1 || targetIndex == -1) {
-            System.out.println("invalid source or target currency.");
-            return;
+            System.out.println("Invalid source or target currency.");
+            return -1; // returning -1 to indicate an error in the input
         }
 
         // initialize distance and path matrices for floyd-warshall algorithm
         double[][] dist = new double[n][n];
-        int[][] next = new int[n][n];
 
-        // fill the distance matrix with exchange rates and set up the path matrix
+        // fill the distance matrix with exchange rates
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (i == j) {
@@ -37,7 +37,6 @@ public class BestConversionRateFinder {
                 } else {
                     dist[i][j] = exchangeRates[i][j];
                 }
-                next[i][j] = j;
             }
         }
 
@@ -47,14 +46,13 @@ public class BestConversionRateFinder {
                 for (int j = 0; j < n; j++) {
                     if (dist[i][j] < dist[i][k] * dist[k][j]) {
                         dist[i][j] = dist[i][k] * dist[k][j];
-                        next[i][j] = next[i][k];
                     }
                 }
             }
         }
 
-        // retrieve and print the best conversion rate and the path from source to target
-        printBestConversionPath(dist, next, sourceIndex, targetIndex, currencyNames);
+        // return the best conversion rate from source to target
+        return dist[sourceIndex][targetIndex];
     }
 
     // helper method to find the index of a currency in the currency names array

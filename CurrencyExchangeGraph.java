@@ -16,6 +16,19 @@ public class CurrencyExchangeGraph {
     // constructor to initialize the currency exchange graph
     // takes the number of currencies, their names, and the exchange rates matrix as input
     public CurrencyExchangeGraph(int numberOfCurrencies, String[] currencyNames, double[][] exchangeRates) {
+        // validate the input data to prevent invalid initialization
+        if (currencyNames.length != numberOfCurrencies) {
+            throw new IllegalArgumentException("currencyNames length must match numberOfCurrencies.");
+        }
+        if (exchangeRates.length != numberOfCurrencies) {
+            throw new IllegalArgumentException("exchangeRates matrix must have a size of " + numberOfCurrencies + "x" + numberOfCurrencies + ".");
+        }
+        for (double[] row : exchangeRates) {
+            if (row.length != numberOfCurrencies) {
+                throw new IllegalArgumentException("exchangeRates matrix must have " + numberOfCurrencies + " columns in every row.");
+            }
+        }
+
         this.numberOfCurrencies = numberOfCurrencies;
         this.currencyNames = currencyNames;
         this.exchangeRates = exchangeRates;
